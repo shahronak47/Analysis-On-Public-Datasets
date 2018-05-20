@@ -1,0 +1,35 @@
+---
+title: "My first markdown"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(reshape2)
+```
+
+Read csv and Remove total rows from state and UT calculations
+```{r}
+df <- read.csv("/Users/Ronak Shah/Downloads/datafile.csv")
+df <- df[-c(30, 38),]
+```
+Divide crime rate by population
+```{r}
+new_df <- cbind(df[c(2, 3)], df[,c(4, 5, 6)]/df[,9])
+plot_df <- new_df[tail(order(new_df$Year...2014, new_df$Year...2015, new_df$Year...2016), 10), ]
+plot_df
+```
+
+
+
+Plot the crime rate by population for 3 years for top 10 states
+
+```{r}
+#Reshape from wide to long in R
+new_df <- melt(plot_df, id.vars = c("Category", "State.UT"))
+ggplot(new_df, aes(State.UT, value, fill = variable)) +
+  geom_bar(stat="identity",position='dodge')
+
+```
+
