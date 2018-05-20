@@ -1,6 +1,6 @@
 ---
-title: "My first markdown"
-output: rmarkdown::github_document
+title: "Crime in India"
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
