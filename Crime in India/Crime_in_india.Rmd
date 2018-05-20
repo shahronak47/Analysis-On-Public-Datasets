@@ -1,6 +1,6 @@
 ---
 title: "Crime in India"
-output: html_document
+output: rmarkdown::github_document
 ---
 
 ```{r setup, include=FALSE}

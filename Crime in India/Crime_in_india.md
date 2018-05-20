@@ -1,4 +1,4 @@
-My first markdown
+Crime in India
 ================
 
 Read csv and Remove total rows from state and UT calculations
@@ -31,7 +31,7 @@ plot_df
 Plot the crime rate by population for 3 years for top 10 states
 
 ``` r
-#Reshape from wide to long in R
+#Reshape from wide to long
 new_df <- melt(plot_df, id.vars = c("Category", "State.UT"))
 ggplot(new_df, aes(State.UT, value, fill = variable)) +
   geom_bar(stat="identity",position='dodge')
