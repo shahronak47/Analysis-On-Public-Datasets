@@ -1,8 +1,8 @@
 #Load the libraries
 library(tidyverse)
+library(lubridate)
 library(wordcloud)
 library(tm)
-library(sentimentr)
 library(syuzhet)
 
 tweets <- read.csv("/Users/Ronak Shah/Google Drive/Analysis-On-Public-Datasets/My tweets/Data/__ROOT__.tsv", sep = "\t", stringsAsFactors = FALSE)
@@ -16,7 +16,7 @@ range(tweets$tweet_time, na.rm = TRUE)
 #Removing the ones whoch are not in reply to anyone
 
 max_replies <- data.frame(head(sort(table(tweets$in_reply_to_screen_name[tweets$in_reply_to_screen_name != ""]), decreasing = TRUE), 10))
-  
+
 ggplot(max_replies, aes(Var1, Freq)) + 
   geom_bar(stat="identity", color = "blue", fill = "black") + 
   xlab("Users") + ylab("Number of mentions")
@@ -30,7 +30,7 @@ ggplot(tweet_hours, aes(Var1, Freq, group = 1)) +
   xlab("Hours") + ylab("Number of tweets")
 
 
-#Most used words
+#Most used words using wordcloud
 #Split strings into words
 all_words <- unlist(strsplit(tweets$full_text, "\\s+"))
 #Remove @ mention
@@ -38,8 +38,23 @@ all_words = all_words[!grepl("^@", all_words)]
 #Remove stopwords
 all_words <- all_words[!tolower(all_words) %in% stopwords()]
 
-
-
-head(sort(table(all_words), decreasing = TRUE), 20)
 wordcloud(all_words)
+
+#Applying the same for every sentence, cleaning every sentence
+tweets$clean_text <- unname(sapply(tweets$full_text, function(x) {
+  without_at = sub("@\\S+ ", "",x)
+  all_words = unlist(strsplit(tolower(without_at), "\\s+"))
+  paste(all_words[!all_words %in% stopwords()], collapse = " ")
+}))
+
+
+#Sentiment score for every sentence
+tweets$sentiment_score <- get_sentiment(tweets$clean_text)
+
+#plot taking the mean of each hour
+tweets %>%
+  group_by(hour = hour(tweet_time)) %>%
+  summarise(hourly_sentiment_mean = mean(sentiment_score, na.rm = TRUE)) %>%
+  ggplot() + aes(hour, hourly_sentiment_mean) + 
+  geom_line()
 
