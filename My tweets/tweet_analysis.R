@@ -2,13 +2,16 @@
 library(tidyverse)
 library(wordcloud)
 library(tm)
+library(sentimentr)
+library(syuzhet)
 
-
+tweets <- read.csv("/Users/Ronak Shah/Google Drive/Analysis-On-Public-Datasets/My tweets/Data/__ROOT__.tsv", sep = "\t", stringsAsFactors = FALSE)
 #Convert tweet class to posixct format
 tweets$tweet_time <- as.POSIXct(tweets$created_at, format = "%a %b %d %H:%M:%S +0000 %Y")
 
 #Range of tweet time
 range(tweets$tweet_time, na.rm = TRUE)
+
 #Most number of people I have replied to 
 #Removing the ones whoch are not in reply to anyone
 
@@ -35,12 +38,8 @@ all_words = all_words[!grepl("^@", all_words)]
 #Remove stopwords
 all_words <- all_words[!tolower(all_words) %in% stopwords()]
 
+
+
 head(sort(table(all_words), decreasing = TRUE), 20)
 wordcloud(all_words)
 
-tweets %>%
-  filter(in_reply_to_screen_name == "PangebazPorgi") %>%
-  select(full_text, tweet_time, in_reply_to_status_id_str) %>%
-  View()
-
-tweets$full_text[grepl("#LifeProblems", tweets$full_text)]
