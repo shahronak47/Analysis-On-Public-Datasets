@@ -4,6 +4,14 @@ library(lubridate)
 library(wordcloud)
 library(tm)
 library(syuzhet)
+library(spacyr)
+library(openNLP)
+library(NLP)
+library(stringr)
+
+#Set parameters to avoid Java heap space error
+options(java.parameters = "- Xmx1024m")
+
 
 tweets <- read.csv("/Users/Ronak Shah/Google Drive/Analysis-On-Public-Datasets/My tweets/Data/__ROOT__.tsv", sep = "\t", stringsAsFactors = FALSE)
 #Convert tweet class to posixct format
@@ -58,3 +66,24 @@ tweets %>%
   ggplot() + aes(hour, hourly_sentiment_mean) + 
   geom_line()
 
+
+#Which things I talk the most
+tagPOS <-  function(x, ...) {
+  s <- as.String(x)
+  word_token_annotator <- Maxent_Word_Token_Annotator()
+  a2 <- Annotation(1L, "sentence", 1L, nchar(s))
+  a2 <- annotate(s, word_token_annotator, a2)
+  a3 <- annotate(s, Maxent_POS_Tag_Annotator(), a2)
+  a3w <- a3[a3$type == "word"]
+  POStags <- unlist(lapply(a3w$features, `[[`, "POS"))
+  POStagged <- paste(sprintf("%s/%s", s[a3w], POStags), collapse = " ")
+  list(POStagged = POStagged, POStags = POStags)
+}
+
+
+proper_nouns <- unname(sapply(tweets$clean_text, function(x) {
+  new_x <- tagPOS(x)
+  inds <- new_x$POStags == "NNP"
+  if (any(inds))
+    word(x, which(inds))
+}))
