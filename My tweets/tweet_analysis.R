@@ -8,6 +8,7 @@ library(spacyr)
 library(openNLP)
 library(NLP)
 library(stringr)
+library(RDRPOSTagger)
 
 #Set parameters to avoid Java heap space error
 options(java.parameters = "- Xmx1024m")
@@ -87,3 +88,18 @@ proper_nouns <- unname(sapply(tweets$clean_text, function(x) {
   if (any(inds))
     word(x, which(inds))
 }))
+
+tagger <- rdr_model(language = "English", annotation = "POS")
+proper_nouns <- character()
+sapply(tweets$clean_text, function(x) {
+  new_df <- rdr_pos(tagger, x)
+  proper_nouns <- c(proper_nouns, df$token[df$pos == "NNP"])
+})
+
+i <- 1
+while(i <= nrow(tweets)) {
+  df <- rdr_pos(tagger, tweets$clean_text[i:(i + 10)])
+  proper_nouns <- c(proper_nouns, df$token[df$pos == "NNP"])
+  i = i + 10
+  cat(i)
+}
