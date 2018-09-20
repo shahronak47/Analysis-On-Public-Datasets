@@ -83,3 +83,18 @@ ggplot(nouns_df, aes(words, freq)) +
   geom_text(aes(label=words), nudge_y = 10) +
   theme(axis.text.x=element_blank()) +
   ggtitle("Most commonly used Proper Nouns by me")
+
+
+#number of Tweets by year
+
+tweets %>%
+  group_by(year = year(tweet_time)) %>%
+  summarise(count = n()) %>%
+  na.omit() %>%
+  ggplot() + 
+  aes(year, count) + 
+  geom_line() + geom_point(size = 5) + 
+  theme(panel.background = element_rect(fill = 'grey')) + 
+  ggtitle("Number of tweets by year")
+
+    
