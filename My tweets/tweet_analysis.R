@@ -74,3 +74,12 @@ while(i <= nrow(tweets)) {
   i = i + 1
   print(i)
 }
+
+nouns_df <- data.frame(words = as.factor(words[inds]),freq = counts[inds])
+
+
+ggplot(nouns_df, aes(words, freq)) + 
+  geom_bar(stat = "identity") + 
+  geom_text(aes(label=words), nudge_y = 10) +
+  theme(axis.text.x=element_blank()) +
+  ggtitle("Most commonly used Proper Nouns by me")
