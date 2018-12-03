@@ -1,0 +1,14 @@
+---
+title: "R Notebook analysing Kaggle results"
+output: html_notebook
+---
+
+Load the required libraries
+```{r, echo=FALSE}
+library(tidyverse)
+```
+
+```{r, echo=FALSE}
+
+```
+
