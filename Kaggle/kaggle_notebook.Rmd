@@ -7,8 +7,22 @@ Load the required libraries
 ```{r, echo=FALSE}
 library(tidyverse)
 ```
-
-```{r, echo=FALSE}
-
+Reading and cleaning the data
+```{r}
+#Read the csv
+multch <- read.csv("/Users/Ronak Shah/Downloads/multipleChoiceResponses.csv", header = TRUE)
 ```
 
+Plot top 5 countries participated in the survey
+```{r}
+multch %>%
+  slice(-1) %>%
+  count(Q3) %>%
+  top_n(5, n) %>%
+  ggplot() + 
+    aes(Q3, n) + 
+    geom_bar(stat = "identity") + 
+  xlab("Country") + ylab("Frequency") + 
+  ggtitle("Count of respondents by country")
+
+```
