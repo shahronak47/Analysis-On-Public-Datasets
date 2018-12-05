@@ -40,3 +40,19 @@ multch %>%
   xlab("Gender") + ylab("Count") + 
   ggtitle("Gender count")
 ```
+
+Male and Female ratio for top 5 countries
+
+```{r}
+multch %>%
+  slice(-1) %>%
+  filter(Q1 %in% c("Male", "Female")) %>%
+  count(Q3, Q1) %>%
+  spread(Q1,n) %>%
+  arrange(desc(Male)) %>%
+  head() %>%
+  gather(Country, Value, -Q3) %>%
+  ggplot() + 
+  aes(Q3, Value) + 
+  geom_bar(aes(fill = Country), stat = "identity")
+```
