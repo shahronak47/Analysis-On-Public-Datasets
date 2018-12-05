@@ -22,7 +22,21 @@ multch %>%
   ggplot() + 
     aes(Q3, n) + 
     geom_bar(stat = "identity") + 
-  xlab("Country") + ylab("Frequency") + 
+  xlab("Country") + ylab("Count") + 
   ggtitle("Count of respondents by country")
 
+```
+
+Find out the male-female ratio
+```{r}
+
+multch %>%
+  slice(-1) %>%
+  count(Q1) %>%
+  ggplot() + 
+  aes(Q1, n, fill = n) + 
+  geom_bar(stat = "identity") + 
+  scale_fill_identity() + 
+  xlab("Gender") + ylab("Count") + 
+  ggtitle("Gender count")
 ```
